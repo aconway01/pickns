@@ -1,0 +1,16 @@
+show tables;
+ls
+mysql -h 127.0.0.1 -u aconway01 -p
+mysql -h 127.0.0.1 -uaconway01
+mysql -h 127.0.0.1:3333 -uaconway01
+mysql -h 127.0.0.1 -uaconway01
+ls
+mysql -h 127.0.0.1 -u aconway01 -p
+mysql -h 127.0.0.1
+exit
+mysql -h 127.0.0.1 --port 3333 -u aconway01 -p
+mysql -h 127.0.0.1 --port 3333 -u aconway01 -p Milton123mysql -h 127.0.0.1 --port 3333 -u aconway01 -p
+mysql -h 127.0.0.1 --port 3333 -u aconway01 -p
+mysql -h 127.0.0.1 -u aconway01 -p
+mysql -h 127.0.0.1 -u acmysql -h 127.0.0.1 --port 3333 -u username -ponway01 -p
+exit

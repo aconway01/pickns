@@ -1,0 +1,5 @@
+quit()
+import datetime
+todaysdate = datetime.date.today()
+print(todaysdate)
+quit()
