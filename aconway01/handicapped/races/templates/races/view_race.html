@@ -1,0 +1,1177 @@
+{% extends 'main.html' %} {% load static %}  {% block content %}
+
+<p>
+  <a href='{% url 'races:view_races' today|date:"Y-m-d" race.track_id %}' style="cursor: pointer">&#8592; Back</a>
+</p>
+
+<h6>{{today|date:"l N jS"}}</h6>
+<h3>{{race.track_name}}</h3>
+<h6>{{race.equibasestate}}, {{race.area_id}}</h6>
+<h6 class="mb-3">Race {{race.race_number}} at {{race.post_time|time}}</h6>
+
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Race Info
+      </button>
+    </h2>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
+            <div class="accordion-body">
+            <p>
+              {{race.equibasetext}}<br />
+              <b>Wagers:</b> {{race.wager_text}}<br />
+              <b>Purse:</b> {{race.total_purse}}<br />
+              <b>Type:</b> {{race.race_type_desc}}<br />
+              <b>Distance:</b> {{race.distance_in_furlong}} Furlongs<br />
+              <b>Surface:</b> {{race.surface_display}}<br />
+              <b>Breed:</b> {{race.race_breed_type}}<br />
+              <b><a class="link-primary" target="_blank" href="https://equibase.com/static/entry/{{race.track_id}}{{urlmonth}}{{urlday}}{{urlyear}}{{race.area_id}}{{race.race_number}}-EQB.html"
+            >Equibase Race Link</a></b>
+            </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+    <h2 class="accordion-header" id="headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Runner Info
+      </button>
+    </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+            <div class="accordion-body">
+                <div class="table-responsive">
+                    <p>(Select column to sort by value)</p>
+                    <table class="table table-hover table-striped table-sm sortable">
+                    <thead>
+                      <tr>
+                        <th class="align-top text-center indicator-left fit">Post</th>
+                        <th class="align-top text-center indicator-left fit">Scratch</th>
+                        <th class="align-top text-center indicator-left fit">Horse</th>
+                        <th class="align-top text-center indicator-left fit">ML&nbsp;Odds</th>
+                        <th class="align-top text-center indicator-left fit">Jockey</th>
+                        <th class="align-top text-center indicator-left fit">Trainer</th>
+                        <th class="align-top text-center indicator-left fit">Owner</th>
+                        <th class="align-top text-center indicator-left fit">Sire</th>
+                        <th class="align-top text-center indicator-left fit">Dam</th>
+                        <th class="align-top text-center indicator-left fit">Dam&nbsp;Sire</th>
+                        <th class="align-top text-center indicator-left fit">Breeder</th>
+                        <th class="align-top text-center indicator-left fit">Age</th>
+                        <th class="align-top text-center indicator-left fit">Sex</th>
+                        <th class="align-top text-center indicator-left fit">Med</th>
+                        <th class="align-top text-center indicator-left fit">Jockey&nbsp;Weight</th>
+                        <th class="align-top text-center indicator-left fit">Claim</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for horse in horseEntries %}
+                    <tr>
+                      <td class="fit">{{horse.my_integer_field}}</td>
+                      <td class="fit">{{horse.scratch_indicator}}</td>
+                      <td class="fit">
+                        {% if horse.referencenumber == "-" %} {{horse.horse_name}} {% else %}
+                        <a target="_blank" href="https://www.equibase.com/profiles/Results.cfm?type=Horse&refno={{horse.referencenumber}}&registry=T&rbt=TB">{{horse.horse_name}}</a>
+                        {% endif %}
+                      </td>
+                      <td class="fit" data-sort="{{horse.mloddsfloat}}">{{horse.ml_odds}}</td>
+                      <td class="fit">
+                        {% if horse.jockeyname == "S" or horse.jockeyname == "None" %} {{horse.jockeyname}} {% else %}
+                        <a target="_blank" href="https://www.equibase.com/profiles/Results.cfm?type=People&searchType=J&eID={{horse.jockeyid}}">{{horse.jockeyname}}</a>
+                        {% endif %}
+                      </td>
+                      <td class="fit">
+                        {% if horse.trainername == "S" or horse.trainername == "None" %} {{horse.trainername}} {% else %}
+                        <a target="_blank" href="https://www.equibase.com/profiles/Results.cfm?type=People&searchType=T&eID={{horse.trainerid}}">{{horse.trainername}}</a>
+                        {% endif %}
+                      </td>
+                      <td class="fit">
+                        {% if horse.ownername == "S" or horse.ownername == "None" %} {{horse.ownername}} {% else %}
+                        <a target="_blank" href="https://www.equibase.com/profiles/Results.cfm?type=People&searchType=O&eID={{horse.ownerid}}">{{horse.ownername}}</a>
+                        {% endif %}
+                      </td>
+                      <td class="fit">{{horse.sirename}}</td>
+                      <td class="fit">{{horse.damname}}</td>
+                      <td class="fit">{{horse.damsirename}}</td>
+                      <td class="fit">{{horse.breeder}}</td>
+                      <td class="fit">{{horse.age}}</td>
+                      <td class="fit">{{horse.sex}}</td>
+                      <td class="fit">{{horse.med}}</td>
+                      <td class="fit">{{horse.jockeyweight}}</td>
+                      <td class="fit">{{horse.claim}}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <h6>Performance Statistics</h6>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="chart-tab" data-bs-toggle="tab" data-bs-target="#chart-tab-pane" type="button" role="tab" aria-controls="chart-tab-pane" aria-selected="true">Charts</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="table-tab" data-bs-toggle="tab" data-bs-target="#table-tab-pane" type="button" role="tab" aria-controls="table-tab-pane" aria-selected="false">Tables</button>
+      </li>
+      <!--<li class="nav-item" role="presentation">-->
+      <!--  <button class="nav-link" id="pp-tab" data-bs-toggle="tab" data-bs-target="#pp-tab-pane" type="button" role="tab" aria-controls="pp-tab-pane" aria-selected="false">Past Performance</button>-->
+      <!--</li>-->
+      <!--<li class="nav-item" role="presentation">-->
+      <!--  <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>-->
+      <!--</li>-->
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="chart-tab-pane" role="tabpanel" aria-labelledby="chart-tab" tabindex="0">
+
+            <br>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    {{horseminraceyear}} to {{horsemaxraceyear}} Horses
+                  </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-lg-4">
+                            <select class="form-select" aria-label=" Select Performance" onchange="updateHorsePerformanceChart(this)">
+                                <option value="equibaserank">EQB&nbsp;Rank</option>
+                                <option value="earnings">Earnings</option>
+                                <option value="equibasestarts">Starts</option>
+                                <option value="topthree">Top&nbsp;3</option>
+                                <option value="speed">EQB&nbsp;Speed</option>
+                                <option value="winpercentage">Win&nbsp;%</option>
+                                <option value="topthreepercent">Top&nbsp;3%</option>
+                                <option value="win">Win</option>
+                                <option value="place">Place</option>
+                                <option value="equibaseshow">Show</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div>
+                              <canvas id="horsePerformanceMyChart"></canvas>
+                            </div>
+                          <p class="mt-3">(Select legend options to hide values)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingSix">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                    {{jockeyminraceyear}} to {{jockeymaxraceyear}} Jockeys
+                  </button>
+                </h2>
+                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-lg-4">
+                            <select class="form-select" aria-label=" Select Performance" onchange="updateJockeyPerformanceChart(this)">
+                                <option value="equibaserank">EQB&nbsp;Rank</option>
+                                <option value="earnings">Earnings</option>
+                                <option value="equibasestarts">Starts</option>
+                                <option value="perstart">Per&nbsp;Start</option>
+                                <option value="topthree">Top&nbsp;3</option>
+                                <option value="winpercentage">Win&nbsp;%</option>
+                                <option value="topthreepercent">Top&nbsp;3%</option>
+                                <option value="win">Win</option>
+                                <option value="place">Place</option>
+                                <option value="equibaseshow">Show</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div>
+                              <canvas id="jockeyPerformanceMyChart"></canvas>
+                            </div>
+                          <p class="mt-3">(Select legend options to hide values)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingEight">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                    {{trainerminraceyear}} to {{trainermaxraceyear}} Trainers
+                  </button>
+                </h2>
+                <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-lg-4">
+                            <select class="form-select" aria-label=" Select Performance" onchange="updateTrainerPerformanceChart(this)">
+                                <option value="equibaserank">EQB&nbsp;Rank</option>
+                                <option value="earnings">Earnings</option>
+                                <option value="equibasestarts">Starts</option>
+                                <option value="perstart">Per&nbsp;Start</option>
+                                <option value="starters">Starters</option>
+                                <option value="startsperstarter">Starts&nbsp;Per&nbsp;Starter</option>
+                                <option value="wpsperstarter">WPS&nbsp;Per&nbsp;Starter</option>
+                                <option value="earningsperstarter">Earnings&nbsp;Per&nbsp;Starter</option>
+                                <option value="topthree">Top&nbsp;3</option>
+                                <option value="winpercentage">Win&nbsp;%</option>
+                                <option value="topthreepercent">Top&nbsp;3%</option>
+                                <option value="win">Win</option>
+                                <option value="place">Place</option>
+                                <option value="equibaseshow">Show</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div>
+                              <canvas id="trainerPerformanceMyChart"></canvas>
+                            </div>
+                          <p class="mt-3">(Select legend options to hide values)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTen">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                    {{ownerminraceyear}} to {{ownermaxraceyear}} Owners
+                  </button>
+                </h2>
+                <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen">
+                    <div class="accordion-body">
+                        <div class="row mb-3">
+                            <div class="col-lg-4">
+                            <select class="form-select" aria-label=" Select Performance" onchange="updateOwnerPerformanceChart(this)">
+                                <option value="equibaserank">EQB&nbsp;Rank</option>
+                                <option value="earnings">Earnings</option>
+                                <option value="equibasestarts">Starts</option>
+                                <option value="perstart">Per&nbsp;Start</option>
+                                <option value="topthree">Top&nbsp;3</option>
+                                <option value="winpercentage">Win&nbsp;%</option>
+                                <option value="topthreepercent">Top&nbsp;3%</option>
+                                <option value="win">Win</option>
+                                <option value="place">Place</option>
+                                <option value="equibaseshow">Show</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div>
+                              <canvas id="ownerPerformanceMyChart"></canvas>
+                            </div>
+                          <p class="mt-3">(Select legend options to hide values)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+      </div>
+
+      <div class="tab-pane fade" id="table-tab-pane" role="tabpanel" aria-labelledby="table-tab" tabindex="0">
+
+        <br>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                {{horseminraceyear}} to {{horsemaxraceyear}} Horses
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-lg-4">
+                        <select class="form-select" aria-label=" Select Performance" onchange="updateHorsePerformanceTable(this)">
+                            {% for myyear in horseequibaseraceyears reversed %} <option value='{{myyear|safe}}'>{{myyear|safe}}</option> {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+
+                    <div id="horsePerformanceMyTable"></div>
+
+                </div>
+            </div>
+          </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                {{jockeyminraceyear}} to {{jockeymaxraceyear}} Jockeys
+              </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-lg-4">
+                        <select class="form-select" aria-label=" Select Performance" onchange="updateJockeyPerformanceTable(this)">
+                            {% for myyear in jockeyequibaseraceyears reversed %} <option value='{{myyear|safe}}'>{{myyear|safe}}</option> {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+
+                    <div id="jockeyPerformanceMyTable"></div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSeven">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                {{trainerminraceyear}} to {{trainermaxraceyear}} Trainers
+              </button>
+            </h2>
+            <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-lg-4">
+                        <select class="form-select" aria-label=" Select Performance" onchange="updateTrainerPerformanceTable(this)">
+                            {% for myyear in trainerequibaseraceyears reversed %} <option value='{{myyear|safe}}'>{{myyear|safe}}</option> {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+
+                    <div id="trainerPerformanceMyTable"></div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingNine">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                {{ownerminraceyear}} to {{ownermaxraceyear}} Owners
+              </button>
+            </h2>
+            <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-lg-4">
+                        <select class="form-select" aria-label=" Select Performance" onchange="updateOwnerPerformanceTable(this)">
+                            {% for myyear in ownerequibaseraceyears reversed %} <option value='{{myyear|safe}}'>{{myyear|safe}}</option> {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+
+                    <div id="ownerPerformanceMyTable"></div>
+
+                </div>
+            </div>
+        </div>
+
+      </div>
+      <!--<div class="tab-pane fade" id="pp-tab-pane" role="tabpanel" aria-labelledby="pp-tab" tabindex="0">...</div>-->
+      <!--<div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div>-->
+    </div>
+
+</div>
+
+<hr class="mt-3" />
+<p>Race info collected at 12:00 am on the day of racing.</p>
+<p>Performance statistics updated every Sunday.</p>
+<p>Statistics limited to thoroughbred horses with at least one start in the United States, Canada or Puerto Rico.</p>
+
+<script src="{% static 'sortable.js' %}"></script>
+
+<!--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+
+<script>
+
+  //////////////////////////
+  //// Horse Statistics ////
+  //////////////////////////
+
+  function updateHorsePerformanceTable(option) {
+      // Horse Performance Table
+
+      let myyear = String(option.value);// ? option.value : option;//'2022';
+
+      if (myyear > {{horsemaxraceyear}}) {
+          myyear = "{{horsemaxraceyear}}";
+      }
+
+      const tabledata = {{horsedatasets|safe}};
+
+      let horsePerformanceMyTable = `<div class="table-responsive">
+                        <p>(Select column to sort by value)</p>
+                        <table class="table table-hover table-striped table-sm sortable">
+                        <thead>
+                          <tr>
+                            <th class="align-top text-center indicator-left fit">Post</th>
+                            <th class="align-top text-center indicator-left fit">Scratch</th>
+                            <th class="align-top text-center indicator-left fit">Horse</th>
+                            <th class="align-top text-center indicator-left fit">EQB&nbsp;Rank</th>
+                            <th class="align-top text-center indicator-left fit">Earnings</th>
+                            <th class="align-top text-center indicator-left fit">Starts</th>
+                            <th class="align-top text-center indicator-left fit">Top&nbsp;3</th>
+                            <th class="align-top text-center indicator-left fit">EQB&nbsp;Speed</th>
+                            <th class="align-top text-center indicator-left fit">Win&nbsp;%</th>
+                            <th class="align-top text-center indicator-left fit">Top&nbsp;3%</th>
+                            <th class="align-top text-center indicator-left fit">Win</th>
+                            <th class="align-top text-center indicator-left fit">Place</th>
+                            <th class="align-top text-center indicator-left fit">Show</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        `;
+
+      for (let i = 0; i < tabledata.length; i++) {
+
+          horsePerformanceMyTable += "<tr>";
+
+          horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].my_integer_field + "</td>";
+          horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].scratch_indicator + "</td>";
+          if (tabledata[i].referencenumber != "") {
+            horsePerformanceMyTable+= '<td class="fit"><a target="_blank" href="https://www.equibase.com/profiles/Results.cfm?type=Horse&refno='+tabledata[i].referencenumber+'&registry=T&rbt=TB">'+tabledata[i].label+'</a></td>';
+          }
+          else {
+              horsePerformanceMyTable+= '<td class="fit">'+tabledata[i].label+'</td>';
+          }
+
+          let tabledatayears = [];
+
+          // Get available years
+          for (let j = 0; j < tabledata[i].data.length; j++) {
+              tabledatayears.push(tabledata[i].data[j].year);
+          };
+
+        if (tabledatayears.includes(myyear)) {
+
+          for (let j = 0; j < tabledata[i].data.length; j++) {
+
+              if (tabledata[i].data[j].year == myyear) {
+                  horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibaserank + "</td>";
+                  horsePerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.earningsfloat+">" + tabledata[i].data[j].vals.earnings + "</td>";
+                  horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibasestarts + "</td>";
+                  horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.topthree + "</td>";
+                  horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.speedfigure + "</td>";
+                  horsePerformanceMyTable +=  "<td class='fit' data-sort="+tabledata[i].data[j].vals.winpercentage+">" + tabledata[i].data[j].vals.winpercentage + "%</td>";
+                  horsePerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.topthreepercent+">" + tabledata[i].data[j].vals.topthreepercent + "%</td>";
+                  horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.win + "</td>";
+                  horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.place + "</td>";
+                  horsePerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibaseshow + "</td>";
+              }
+              else {
+
+              }
+          }
+        }
+        else {
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+          horsePerformanceMyTable += "<td class='fit'> - </td>";
+        }
+
+        horsePerformanceMyTable += "</tr>";
+      }
+
+      horsePerformanceMyTable += "</tbody></table></div>";
+
+      let horseperformancetable = document.getElementById('horsePerformanceMyTable');
+
+      horseperformancetable.innerHTML = horsePerformanceMyTable;
+
+    }
+
+  // Horse Performance Chart
+  const horseperformancectx = document.getElementById('horsePerformanceMyChart');
+
+    // # horsedatasets = [{
+    // #    'label': "horsename",
+    // #    'data': [{
+    // #            'year': '2020',
+    // #            'vals': {'EQBrank': '940', 'speed': '94'}
+    // #        },
+    // #        {
+    // #            'year': '2021',
+    // #            'vals': {'EQBrank': '940', 'speed': '94'}
+    // #        },
+    // #        ]
+    // # }
+
+  const horsePerformanceMyChart = new Chart(horseperformancectx, {
+    type: 'line',
+    data: {
+      // labels:  ['2020','2021','2022'],
+      labels: [{% for myyear in horseequibaseraceyears %} '{{myyear|safe}}', {% endfor %}],
+      datasets: [
+        {% for entry in horsedatasets %}
+            {% if entry.data %}
+            {
+                label: "{{entry.my_integer_field|safe}}. {{entry.label|safe}}",
+                data: [
+                    {% for stat in entry.data %}
+                    {
+                        year: '{{stat.year|safe}}',
+                        vals: {
+                            equibaserank: {{stat.vals.equibaserank|safe}},
+                            earnings: {{stat.vals.earningsfloat|safe}},
+                            equibasestarts: {{stat.vals.equibasestarts|safe}},
+                            topthree: {{stat.vals.topthree|safe}},
+                            speed: {{stat.vals.speedfigure|safe}},
+                            winpercentage: {{stat.vals.winpercentage|safe}},
+                            topthreepercent: {{stat.vals.topthreepercent|safe}},
+                            win: {{stat.vals.win|safe}},
+                            place: {{stat.vals.place|safe}},
+                            equibaseshow: {{stat.vals.equibaseshow|safe}}
+                        }
+                    },
+                    {% endfor %}
+                ],
+                borderWidth: 1,
+                parsing: {
+                    xAxisKey: 'year',
+                    yAxisKey: 'vals.equibaserank'
+                }
+              },
+            {% endif %}
+        {% endfor %}
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+      },
+        plugins: {
+            legend: {
+                display: true,
+                position: "bottom",
+                labels: {
+                    boxWidth: 20 + 10,
+                    boxHeight: Chart.defaults.font.size + 10,
+                }
+            }
+        }
+    }
+  });
+
+  function updateHorsePerformanceChart(option) {
+      // console.log(option.value);
+      for (let i = 0; i < horsePerformanceMyChart.data.datasets.length; i++) {
+          horsePerformanceMyChart.data.datasets[i].parsing.yAxisKey = `vals.${option.value}`;
+          horsePerformanceMyChart.update();
+      }
+  }
+
+  ///////////////////////////
+  //// Jockey Statistics ////
+  ///////////////////////////
+
+  function updateJockeyPerformanceTable(option) {
+      // Jockey Performance Table
+
+      let myyear = String(option.value);// ? option.value : option;//'2022';
+
+      if (myyear > {{jockeymaxraceyear}}) {
+          myyear = "{{jockeymaxraceyear}}";
+      }
+
+      const tabledata = {{jockeydatasets|safe}};
+
+      let jockeyPerformanceMyTable = `<div class="table-responsive">
+                        <p>(Select column to sort by value)</p>
+                        <table class="table table-hover table-striped table-sm sortable">
+                        <thead>
+                          <tr>
+                            <th class="align-top text-center indicator-left fit">Post</th>
+                            <th class="align-top text-center indicator-left fit">Scratch</th>
+                            <th class="align-top text-center indicator-left fit">Jockey</th>
+                            <th class="align-top text-center indicator-left fit">EQB&nbsp;Rank</th>
+                            <th class="align-top text-center indicator-left fit">Earnings</th>
+                            <th class="align-top text-center indicator-left fit">Starts</th>
+                            <th class="align-top text-center indicator-left fit">Per&nbsp;Start</th>
+                            <th class="align-top text-center indicator-left fit">Top&nbsp;3</th>
+                            <th class="align-top text-center indicator-left fit">Win&nbsp;%</th>
+                            <th class="align-top text-center indicator-left fit">Top&nbsp;3%</th>
+                            <th class="align-top text-center indicator-left fit">Win</th>
+                            <th class="align-top text-center indicator-left fit">Place</th>
+                            <th class="align-top text-center indicator-left fit">Show</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        `;
+
+      for (let i = 0; i < tabledata.length; i++) {
+
+          jockeyPerformanceMyTable += "<tr>";
+
+          jockeyPerformanceMyTable += "<td class='fit'>" + tabledata[i].my_integer_field + "</td>";
+          jockeyPerformanceMyTable += "<td class='fit'>" + tabledata[i].scratch_indicator + "</td>";
+          if ((tabledata[i].jockeyname != "None") && (tabledata[i].jockeyname != "S")) {
+            jockeyPerformanceMyTable+= '<td class="fit"><a target="_blank" href="https://www.equibase.com/profiles/Results.cfm?type=People&searchType=J&eID='+tabledata[i].jockeyid+'">'+tabledata[i].jockeyname+'</a></td>';
+          }
+          else {
+              jockeyPerformanceMyTable+= '<td class="fit">'+tabledata[i].jockeyname+'</td>';
+          }
+
+          let tabledatayears = [];
+
+          // Get available years
+          for (let j = 0; j < tabledata[i].data.length; j++) {
+              tabledatayears.push(tabledata[i].data[j].year);
+          }
+
+        if (tabledatayears.includes(myyear)) {
+
+          for (let j = 0; j < tabledata[i].data.length; j++) {
+
+              if (tabledata[i].data[j].year == myyear) {
+                  jockeyPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibaserank + "</td>";
+                  jockeyPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.earningsfloat+">" + tabledata[i].data[j].vals.earnings + "</td>";
+                  jockeyPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibasestarts + "</td>";
+                  jockeyPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.perstartfloat+">" + tabledata[i].data[j].vals.perstart + "</td>";
+                  jockeyPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.topthree + "</td>";
+                  jockeyPerformanceMyTable +=  "<td class='fit' data-sort="+tabledata[i].data[j].vals.winpercentage+">" + tabledata[i].data[j].vals.winpercentage + "%</td>";
+                  jockeyPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.topthreepercent+">" + tabledata[i].data[j].vals.topthreepercent + "%</td>";
+                  jockeyPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.win + "</td>";
+                  jockeyPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.place + "</td>";
+                  jockeyPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibaseshow + "</td>";
+              }
+              else {
+
+              }
+          }
+        }
+        else {
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+          jockeyPerformanceMyTable += "<td class='fit'> - </td>";
+        }
+
+        jockeyPerformanceMyTable += "</tr>";
+      }
+
+      jockeyPerformanceMyTable += "</tbody></table></div>";
+
+      let jockeyperformancetable = document.getElementById('jockeyPerformanceMyTable');
+
+      jockeyperformancetable.innerHTML = jockeyPerformanceMyTable;
+
+    }
+
+  // Jockey Performance Chart
+  const jockeyperformancectx = document.getElementById('jockeyPerformanceMyChart');
+
+    // # horsedatasets = [{
+    // #    'label': "horsename",
+    // #    'data': [{
+    // #            'year': '2020',
+    // #            'vals': {'EQBrank': '940', 'speed': '94'}
+    // #        },
+    // #        {
+    // #            'year': '2021',
+    // #            'vals': {'EQBrank': '940', 'speed': '94'}
+    // #        },
+    // #        ]
+    // # }
+
+  const jockeyPerformanceMyChart = new Chart(jockeyperformancectx, {
+    type: 'line',
+    data: {
+      // labels:  ['2020','2021','2022'],
+      labels: [{% for myyear in jockeyequibaseraceyears %} '{{myyear|safe}}', {% endfor %}],
+      datasets: [
+        {% for jockeyentry in jockeydatasets %}
+            {% if jockeyentry.data %}
+            {
+                label: "{{jockeyentry.my_integer_field|safe}}. {{jockeyentry.jockeyname|safe}}",
+                data: [
+                    {% for jockeystat in jockeyentry.data %}
+                    {
+                        year: '{{jockeystat.year|safe}}',
+                        vals: {
+                            equibaserank: {{jockeystat.vals.equibaserank|safe}},
+                            earnings: {{jockeystat.vals.earningsfloat|safe}},
+                            equibasestarts: {{jockeystat.vals.equibasestarts|safe}},
+                            perstart: {{jockeystat.vals.perstartfloat|safe}},
+                            topthree: {{jockeystat.vals.topthree|safe}},
+                            winpercentage: {{jockeystat.vals.winpercentage|safe}},
+                            topthreepercent: {{jockeystat.vals.topthreepercent|safe}},
+                            win: {{jockeystat.vals.win|safe}},
+                            place: {{jockeystat.vals.place|safe}},
+                            equibaseshow: {{jockeystat.vals.equibaseshow|safe}}
+                        }
+                    },
+                    {% endfor %}
+                ],
+                borderWidth: 1,
+                parsing: {
+                    xAxisKey: 'year',
+                    yAxisKey: 'vals.equibaserank'
+                }
+              },
+            {% endif %}
+        {% endfor %}
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+      },
+        plugins: {
+            legend: {
+                display: true,
+                position: "bottom",
+                labels: {
+                    boxWidth: 20 + 10,
+                    boxHeight: Chart.defaults.font.size + 10,
+                }
+            }
+        }
+    }
+  });
+
+  function updateJockeyPerformanceChart(option) {
+      // console.log(option.value);
+      for (let i = 0; i < jockeyPerformanceMyChart.data.datasets.length; i++) {
+          jockeyPerformanceMyChart.data.datasets[i].parsing.yAxisKey = `vals.${option.value}`;
+          jockeyPerformanceMyChart.update();
+      }
+  }
+
+  ////////////////////////////
+  //// Trainer Statistics ////
+  ////////////////////////////
+
+  function updateTrainerPerformanceTable(option) {
+      // Trainer Performance Table
+
+      let myyear = String(option.value);// ? option.value : option;//'2022';
+
+      if (myyear > {{trainermaxraceyear}}) {
+          myyear = "{{trainermaxraceyear}}";
+      }
+
+      const tabledata = {{trainerdatasets|safe}};
+
+      let trainerPerformanceMyTable = `<div class="table-responsive">
+                        <p>(Select column to sort by value)</p>
+                        <table class="table table-hover table-striped table-sm sortable">
+                        <thead>
+                          <tr>
+                            <th class="align-top text-center indicator-left fit">Post</th>
+                            <th class="align-top text-center indicator-left fit">Scratch</th>
+                            <th class="align-top text-center indicator-left fit">Trainer</th>
+                            <th class="align-top text-center indicator-left fit">EQB&nbsp;Rank</th>
+                            <th class="align-top text-center indicator-left fit">Earnings</th>
+                            <th class="align-top text-center indicator-left fit">Starts</th>
+                            <th class="align-top text-center indicator-left fit">Per&nbsp;Start</th>
+                            <th class="align-top text-center indicator-left fit">Starters</th>
+                            <th class="align-top text-center indicator-left fit">Starts&nbsp;Per&nbsp;Starter</th>
+                            <th class="align-top text-center indicator-left fit">WPS&nbsp;Per&nbsp;Starter</th>
+                            <th class="align-top text-center indicator-left fit">Earnings&nbsp;Per&nbsp;Starter</th>
+                            <th class="align-top text-center indicator-left fit">Top&nbsp;3</th>
+                            <th class="align-top text-center indicator-left fit">Win&nbsp;%</th>
+                            <th class="align-top text-center indicator-left fit">Top&nbsp;3%</th>
+                            <th class="align-top text-center indicator-left fit">Win</th>
+                            <th class="align-top text-center indicator-left fit">Place</th>
+                            <th class="align-top text-center indicator-left fit">Show</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        `;
+
+      for (let i = 0; i < tabledata.length; i++) {
+
+          trainerPerformanceMyTable += "<tr>";
+
+          trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].my_integer_field + "</td>";
+          trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].scratch_indicator + "</td>";
+          if ((tabledata[i].trainername != "None") && (tabledata[i].trainername != "S")) {
+            trainerPerformanceMyTable+= '<td class="fit"><a target="_blank" href="https://www.equibase.com/profiles/Results.cfm?type=People&searchType=T&eID='+tabledata[i].trainerid+'">'+tabledata[i].trainername+'</a></td>';
+          }
+          else {
+              trainerPerformanceMyTable+= '<td class="fit">'+tabledata[i].trainername+'</td>';
+          }
+
+          let tabledatayears = [];
+
+          // Get available years
+          for (let j = 0; j < tabledata[i].data.length; j++) {
+              tabledatayears.push(tabledata[i].data[j].year);
+          }
+
+        if (tabledatayears.includes(myyear)) {
+
+          for (let j = 0; j < tabledata[i].data.length; j++) {
+
+              if (tabledata[i].data[j].year == myyear) {
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibaserank + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.earningsfloat+">" + tabledata[i].data[j].vals.earnings + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibasestarts + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.perstartfloat+">" + tabledata[i].data[j].vals.perstart + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.starters + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.startsperstarter + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.wpsperstarter + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.earningsperstarterfloat+">" + tabledata[i].data[j].vals.earningsperstarter + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.topthree + "</td>";
+                  trainerPerformanceMyTable +=  "<td class='fit' data-sort="+tabledata[i].data[j].vals.winpercentage+">" + tabledata[i].data[j].vals.winpercentage + "%</td>";
+                  trainerPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.topthreepercent+">" + tabledata[i].data[j].vals.topthreepercent + "%</td>";
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.win + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.place + "</td>";
+                  trainerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibaseshow + "</td>";
+              }
+              else {
+
+              }
+          }
+        }
+        else {
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+          trainerPerformanceMyTable += "<td class='fit'> - </td>";
+        }
+
+        trainerPerformanceMyTable += "</tr>";
+      }
+
+      trainerPerformanceMyTable += "</tbody></table></div>";
+
+      let trainerperformancetable = document.getElementById('trainerPerformanceMyTable');
+
+      trainerperformancetable.innerHTML = trainerPerformanceMyTable;
+
+    }
+
+  // Trainer Performance Chart
+  const trainerperformancectx = document.getElementById('trainerPerformanceMyChart');
+
+    // # horsedatasets = [{
+    // #    'label': "horsename",
+    // #    'data': [{
+    // #            'year': '2020',
+    // #            'vals': {'EQBrank': '940', 'speed': '94'}
+    // #        },
+    // #        {
+    // #            'year': '2021',
+    // #            'vals': {'EQBrank': '940', 'speed': '94'}
+    // #        },
+    // #        ]
+    // # }
+
+  const trainerPerformanceMyChart = new Chart(trainerperformancectx, {
+    type: 'line',
+    data: {
+      // labels:  ['2020','2021','2022'],
+      labels: [{% for myyear in trainerequibaseraceyears %} '{{myyear|safe}}', {% endfor %}],
+      datasets: [
+        {% for trainerentry in trainerdatasets %}
+            {% if trainerentry.data %}
+            {
+                label: "{{trainerentry.my_integer_field|safe}}. {{trainerentry.trainername|safe}}",
+                data: [
+                    {% for trainerstat in trainerentry.data %}
+                    {
+                        year: '{{trainerstat.year|safe}}',
+                        vals: {
+                            equibaserank: {{trainerstat.vals.equibaserank|safe}},
+                            earnings: {{trainerstat.vals.earningsfloat|safe}},
+                            equibasestarts: {{trainerstat.vals.equibasestarts|safe}},
+                            perstart: {{trainerstat.vals.perstartfloat|safe}},
+                            starters: {{trainerstat.vals.starters|safe}},
+                            startsperstarter: {{trainerstat.vals.startsperstarter|safe}},
+                            wpsperstarter: {{trainerstat.vals.wpsperstarter|safe}},
+                            earningsperstarter: {{trainerstat.vals.earningsperstarterfloat|safe}},
+                            topthree: {{trainerstat.vals.topthree|safe}},
+                            winpercentage: {{trainerstat.vals.winpercentage|safe}},
+                            topthreepercent: {{trainerstat.vals.topthreepercent|safe}},
+                            win: {{trainerstat.vals.win|safe}},
+                            place: {{trainerstat.vals.place|safe}},
+                            equibaseshow: {{trainerstat.vals.equibaseshow|safe}}
+                        }
+                    },
+                    {% endfor %}
+                ],
+                borderWidth: 1,
+                parsing: {
+                    xAxisKey: 'year',
+                    yAxisKey: 'vals.equibaserank'
+                }
+              },
+            {% endif %}
+        {% endfor %}
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+      },
+        plugins: {
+            legend: {
+                display: true,
+                position: "bottom",
+                labels: {
+                    boxWidth: 20 + 10,
+                    boxHeight: Chart.defaults.font.size + 10,
+                }
+            }
+        }
+    }
+  });
+
+  function updateTrainerPerformanceChart(option) {
+      // console.log(option.value);
+      for (let i = 0; i < trainerPerformanceMyChart.data.datasets.length; i++) {
+          trainerPerformanceMyChart.data.datasets[i].parsing.yAxisKey = `vals.${option.value}`;
+          trainerPerformanceMyChart.update();
+      }
+  }
+
+  ///////////////////////////
+  //// Owner Statistics /////
+  ///////////////////////////
+
+  function updateOwnerPerformanceTable(option) {
+      // Owner Performance Table
+
+      let myyear = String(option.value);// ? option.value : option;//'2022';
+
+      if (myyear > {{ownermaxraceyear}}) {
+          myyear = "{{owneremaxraceyear}}";
+      }
+
+      const tabledata = {{ownerdatasets|safe}};
+
+      let ownerPerformanceMyTable = `<div class="table-responsive">
+                        <p>(Select column to sort by value)</p>
+                        <table class="table table-hover table-striped table-sm sortable">
+                        <thead>
+                          <tr>
+                            <th class="align-top text-center indicator-left fit">Post</th>
+                            <th class="align-top text-center indicator-left fit">Scratch</th>
+                            <th class="align-top text-center indicator-left fit">Owner</th>
+                            <th class="align-top text-center indicator-left fit">EQB&nbsp;Rank</th>
+                            <th class="align-top text-center indicator-left fit">Earnings</th>
+                            <th class="align-top text-center indicator-left fit">Starts</th>
+                            <th class="align-top text-center indicator-left fit">Per&nbsp;Start</th>
+                            <th class="align-top text-center indicator-left fit">Top&nbsp;3</th>
+                            <th class="align-top text-center indicator-left fit">Win&nbsp;%</th>
+                            <th class="align-top text-center indicator-left fit">Top&nbsp;3%</th>
+                            <th class="align-top text-center indicator-left fit">Win</th>
+                            <th class="align-top text-center indicator-left fit">Place</th>
+                            <th class="align-top text-center indicator-left fit">Show</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        `;
+
+      for (let i = 0; i < tabledata.length; i++) {
+
+          ownerPerformanceMyTable += "<tr>";
+
+          ownerPerformanceMyTable += "<td class='fit'>" + tabledata[i].my_integer_field + "</td>";
+          ownerPerformanceMyTable += "<td class='fit'>" + tabledata[i].scratch_indicator + "</td>";
+          if ((tabledata[i].ownername != "None") && (tabledata[i].ownername != "S")) {
+            ownerPerformanceMyTable+= '<td class="fit"><a target="_blank" href="https://www.equibase.com/profiles/Results.cfm?type=People&searchType=O&eID='+tabledata[i].ownerid+'">'+tabledata[i].ownername+'</a></td>';
+          }
+          else {
+              ownerPerformanceMyTable+= '<td class="fit">'+tabledata[i].ownername+'</td>';
+          }
+
+          let tabledatayears = [];
+
+          // Get available years
+          for (let j = 0; j < tabledata[i].data.length; j++) {
+              tabledatayears.push(tabledata[i].data[j].year);
+          }
+
+        if (tabledatayears.includes(myyear)) {
+
+          for (let j = 0; j < tabledata[i].data.length; j++) {
+
+              if (tabledata[i].data[j].year == myyear) {
+                  ownerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibaserank + "</td>";
+                  ownerPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.earningsfloat+">" + tabledata[i].data[j].vals.earnings + "</td>";
+                  ownerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibasestarts + "</td>";
+                  ownerPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.perstartfloat+">" + tabledata[i].data[j].vals.perstart + "</td>";
+                  ownerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.topthree + "</td>";
+                  ownerPerformanceMyTable +=  "<td class='fit' data-sort="+tabledata[i].data[j].vals.winpercentage+">" + tabledata[i].data[j].vals.winpercentage + "%</td>";
+                  ownerPerformanceMyTable += "<td class='fit' data-sort="+tabledata[i].data[j].vals.topthreepercent+">" + tabledata[i].data[j].vals.topthreepercent + "%</td>";
+                  ownerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.win + "</td>";
+                  ownerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.place + "</td>";
+                  ownerPerformanceMyTable += "<td class='fit'>" + tabledata[i].data[j].vals.equibaseshow + "</td>";
+              }
+              else {
+
+              }
+          }
+        }
+        else {
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+          ownerPerformanceMyTable += "<td class='fit'> - </td>";
+        }
+
+        ownerPerformanceMyTable += "</tr>";
+      }
+
+      ownerPerformanceMyTable += "</tbody></table></div>";
+
+      let ownerperformancetable = document.getElementById('ownerPerformanceMyTable');
+
+      ownerperformancetable.innerHTML = ownerPerformanceMyTable;
+
+    }
+
+  // Owner Performance Chart
+  const ownerperformancectx = document.getElementById('ownerPerformanceMyChart');
+
+    // # horsedatasets = [{
+    // #    'label': "horsename",
+    // #    'data': [{
+    // #            'year': '2020',
+    // #            'vals': {'EQBrank': '940', 'speed': '94'}
+    // #        },
+    // #        {
+    // #            'year': '2021',
+    // #            'vals': {'EQBrank': '940', 'speed': '94'}
+    // #        },
+    // #        ]
+    // # }
+
+  const ownerPerformanceMyChart = new Chart(ownerperformancectx, {
+    type: 'line',
+    data: {
+      // labels:  ['2020','2021','2022'],
+      labels: [{% for myyear in ownerequibaseraceyears %} '{{myyear|safe}}', {% endfor %}],
+      datasets: [
+        {% for ownerentry in ownerdatasets %}
+            {% if ownerentry.data %}
+            {
+                label: "{{ownerentry.my_integer_field|safe}}. {{ownerentry.ownername|safe}}",
+                data: [
+                    {% for ownerstat in ownerentry.data %}
+                    {
+                        year: '{{ownerstat.year|safe}}',
+                        vals: {
+                            equibaserank: {{ownerstat.vals.equibaserank|safe}},
+                            earnings: {{ownerstat.vals.earningsfloat|safe}},
+                            equibasestarts: {{ownerstat.vals.equibasestarts|safe}},
+                            perstart: {{ownerstat.vals.perstartfloat|safe}},
+                            topthree: {{ownerstat.vals.topthree|safe}},
+                            winpercentage: {{ownerstat.vals.winpercentage|safe}},
+                            topthreepercent: {{ownerstat.vals.topthreepercent|safe}},
+                            win: {{ownerstat.vals.win|safe}},
+                            place: {{ownerstat.vals.place|safe}},
+                            equibaseshow: {{ownerstat.vals.equibaseshow|safe}}
+                        }
+                    },
+                    {% endfor %}
+                ],
+                borderWidth: 1,
+                parsing: {
+                    xAxisKey: 'year',
+                    yAxisKey: 'vals.equibaserank'
+                }
+              },
+            {% endif %}
+        {% endfor %}
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+      },
+        plugins: {
+            legend: {
+                display: true,
+                position: "bottom",
+                labels: {
+                    boxWidth: 20 + 10,
+                    boxHeight: Chart.defaults.font.size + 10,
+                }
+            }
+        }
+    }
+  });
+
+  function updateOwnerPerformanceChart(option) {
+      // console.log(option.value);
+      for (let i = 0; i < ownerPerformanceMyChart.data.datasets.length; i++) {
+          ownerPerformanceMyChart.data.datasets[i].parsing.yAxisKey = `vals.${option.value}`;
+          ownerPerformanceMyChart.update();
+      }
+  };
+
+  // Set default table selection to current year
+  window.onload = function(){
+      let currentyear = {};
+      currentyear['value'] = String(new Date().getFullYear());
+      console.log(currentyear);
+
+    //   let horsecurrentyearlist = [{% for myyear in horseequibaseraceyears %} '{{myyear|safe}}', {% endfor %}];
+    //   let jockeycurrentyearlist = [{% for myyear in jockeyequibaseraceyears %} '{{myyear|safe}}', {% endfor %}];
+    //   let trainercurrentyearlist = [{% for myyear in trainerequibaseraceyears %} '{{myyear|safe}}', {% endfor %}];
+    //   let ownercurrentyearlist = [{% for myyear in ownerequibaseraceyears %} '{{myyear|safe}}', {% endfor %}];
+
+    //   let horsecurrentyear = horsecurrentyearlist[horsecurrentyearlist.length - 1];
+    //   let jockeycurrentyear = jockeycurrentyearlist[jockeycurrentyearlist.length - 1];
+    //   let trainercurrentyear = trainercurrentyearlist[trainercurrentyearlist.length - 1];
+    //   let ownercurrentyear = ownercurrentyearlist[ownercurrentyearlist.length - 1];
+
+    //   console.log(horsecurrentyear);
+
+      updateHorsePerformanceTable(currentyear);
+      updateJockeyPerformanceTable(currentyear);
+      updateTrainerPerformanceTable(currentyear);
+      updateOwnerPerformanceTable(currentyear);
+  };
+
+</script>
+
+
+{% endblock %}

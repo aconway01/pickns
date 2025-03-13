@@ -1,0 +1,51 @@
+{% extends 'main.html' %} {% block content %}
+
+<!-- <h1>Homepage</h1> -->
+
+{% load target_replace %}
+
+<!--<h3>Welcome, {{request.user.first_name}}</h3>-->
+
+<!--<h4>Today's Races (Thoroughbred)</h4>-->
+<!--<div class="form-floating mt-3">-->
+<!--  <select class="form-select" id="trackselect" name="trackselect">-->
+<!--    {% for track in tracknames %}-->
+<!--    <option value="" href="{% url 'races:view_races' today|date:"Y-m-d" track.track_id %}">{{track.track_name}} ({{track.equibasestate}}, {{track.area_id}})</option>-->
+<!--    {% endfor %}-->
+<!--  </select>-->
+<!--  <label for="trackselect" class="form-label">Select Track</label>-->
+<!--</div>-->
+<!--<button class="btn btn-outline-primary mt-3 mb-4" onclick="selectTrack()">Select</button>-->
+
+<!--<br />-->
+
+<h4 class="mb-3">{{today|date:"l N jS"}} Races</h4>
+
+{% for track in tracknames %}
+  <a href='{{myhost}}/races/{{today|date:"Y-m-d"}}/{{track.track_id}}/' class="btn btn-outline-{% cycle 'primary' 'secondary' 'success' 'danger' 'warning' 'info' %} mb-3 mt-3">{{track.track_name}} ({{track.equibasestate}}, {{track.area_id}})</a>
+  &nbsp;
+{% endfor %}
+
+<script>
+  function selectTrack() {
+    var e = document.getElementById("trackselect");
+    var option = e.options[e.selectedIndex];
+    // Now we have the selected option we can get its attribtues
+
+    var attrs = option.attributes;
+    // attrs is the attributes array you can get attribtues by index you want.
+
+    // Or you can get attribtues by
+
+    var myrace = option.getAttribute("href");
+
+    console.log(option);
+    console.log(e.selectedIndex);
+    console.log(myrace);
+
+    searchStr = "{{myhost}}" + myrace;
+    window.location = searchStr;
+  }
+</script>
+
+{% endblock %}

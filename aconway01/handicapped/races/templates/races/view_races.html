@@ -1,0 +1,107 @@
+{% extends 'main.html' %} {% load static %} {% block content %}
+
+<p>
+  <a href="/" style="cursor: pointer">&#8592; Back</a>
+</p>
+
+<!--<h4>-->
+<!--  <a target="_blank" href="https://equibase.com/static/entry/{{track_id}}{{urlmonth}}{{urlday}}{{urlyear}}{{area_id}}-EQB.html"-->
+<!--    >Today's Races at {{trackname}} ({{state}}, {{area_id}})</a-->
+<!--  >-->
+<!--</h4>-->
+
+<h6>{{today|date:"l N jS"}}</h6>
+<h3>{{trackname}}</h3>
+<h6 class="mb-3">{{state}}, {{area_id}}</h6>
+
+{% for race in races %}
+  <a href='{{myhost}}/races/{{today|date:"Y-m-d"}}/{{race.track_id}}/{{race.race_number}}/' class="btn btn-outline-{% cycle 'primary' 'secondary' 'success' 'danger' 'warning' 'info' %} mb-3 mt-3">Race {{race.race_number}} at {{race.post_time|time}}</a>
+  &nbsp;
+{% endfor %}
+
+<!--<div class="row">-->
+<!--  <div class="col-lg-6">-->
+<!--    <div class="form-floating mt-3">-->
+<!--      <select class="form-select" id="raceselect" name="raceselect">-->
+<!--        {% for race in races %}-->
+<!--        <option value="" href="{% url 'races:view_race' today|date:"Y-m-d" race.track_id race.race_number %}">Race {{race.race_number}} at {{race.post_time|time}}</option>-->
+<!--        {% endfor %}-->
+<!--      </select>-->
+<!--      <label for="raceselect" class="form-label">Select Race</label>-->
+<!--    </div>-->
+<!--    <button class="btn btn-outline-primary mt-3 mb-3" onclick="selectRace()">Select</button>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Today's Races Info
+      </button>
+    </h2>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+            <div class="table-responsive">
+              <p>(Select column to sort by value)</p>
+              <table class="table table-hover table-striped table-sm sortable">
+                <thead>
+                  <tr>
+                    <th class="align-top text-center indicator-left fit">Race&nbsp;&nbsp;&nbsp;</th>
+                    <th class="align-top text-center indicator-left fit">Post&nbsp;Time&emsp;&emsp;</th>
+                    <th class="align-top text-center indicator-left fit">Purse</th>
+                    <th class="align-top text-center indicator-left fit">Type</th>
+                    <th class="align-top text-center indicator-left fit">Distance (Furlongs)</th>
+                    <th class="align-top text-center indicator-left fit">Surface</th>
+                    <th class="align-top text-center indicator-left fit">Breed</th>
+                  </tr>
+                </thead>
+                {% for race in races %}
+                <tr>
+                  <td class='fit' data-sort="{{race.race_number}}">
+                    <!--<a-->
+                    <!--  target="_blank"-->
+                    <!--  href="https://equibase.com/static/entry/{{race.track_id}}{{urlmonth}}{{urlday}}{{urlyear}}{{area_id}}{{race.race_number}}-EQB.html"-->
+                    <!--  >Race {{race.race_number}}</a>-->
+                    <a href="{{myhost}}/races/{{today|date:"Y-m-d"}}/{{race.track_id}}/{{race.race_number}}/">Race {{race.race_number}}</a>
+                  </td>
+                  <td class='fit' data-sort='{{race.post_time|time:"G:i"}}'>{{race.post_time|time}}</td>
+                  <td class='fit' data-sort="{{race.totalpursefloat}}">{{race.total_purse}}</td>
+                  <td class='fit'>{{race.race_type_desc}}</td>
+                  <td class='fit'>{{race.distance_in_furlong}}</td>
+                  <td class='fit'>{{race.surface_display}}</td>
+                  <td class='fit'>{{race.race_breed_type}}</td>
+                </tr>
+                {% endfor %}
+              </table>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  function selectRace() {
+    var e = document.getElementById("raceselect");
+    var option = e.options[e.selectedIndex];
+    // Now we have the selected option we can get its attribtues
+
+    var attrs = option.attributes;
+    // attrs is the attributes array you can get attribtues by index you want.
+
+    // Or you can get attribtues by
+
+    var myrace = option.getAttribute("href");
+
+    console.log(option);
+    console.log(e.selectedIndex);
+    console.log(myrace);
+
+    searchStr = "{{myhost}}" + myrace;
+    window.location = searchStr;
+  }
+</script>
+
+<script src="{% static 'sortable.js' %}"></script>
+
+{% endblock %}
